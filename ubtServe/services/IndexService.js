@@ -4,10 +4,11 @@ const WxPay = require("wechatpay-node-v3")
 const axios = require("axios")
 const fs = require("fs")
 const path = require('path')
+const wx = require("../model/wxConfig.json")
 
 const pay = new WxPay({
-    appid: 'wx32dce84a67a9ad93',
-    mchid: '1639966417',
+    appid: wx.appid,
+    mchid: wx.mchid,
     publicKey: fs.readFileSync(path.join(__dirname, "../public/nativePay/apiclient_cert.pem")), // 公钥
     privateKey: fs.readFileSync(path.join(__dirname, "../public/nativePay/apiclient_key.pem")), // 秘钥
 });
