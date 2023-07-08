@@ -1,0 +1,7 @@
+**/node_modules/
+**/dist/
+
+connectionsConfig.json
+wxConfig.json
+*.zip
+*.pem
