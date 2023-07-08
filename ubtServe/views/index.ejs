@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>
+    <%= title %>
+  </title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+  <h1>User表的增删改查的演示</h1>
+  <div>
+    <div>用户名:<input style="background-color: aqua;margin: 5px;" id="username" /></div>
+    <div>手机号:<input style="background-color: aqua;margin: 5px;" type="number" id="tele" /></div>
+    <div>密码 :<input style="background-color: aqua;margin: 5px;" type="number" id="pwd" /></div>
+    <div><button style="background-color: aqua;margin: 5px;" id="register">注册</button></div>
+  </div>
+  <hr>
+  <div>
+    <button style="background-color: aqua;margin: 5px;" id="update">更新</button>
+  </div>
+  <hr>
+  <div>
+    <div>头像<input type="file" id="avater" /></div>
+    <button style="background-color: aqua;margin: 5px;" id="changeAvater">更改头像</button>
+  </div>
+  <hr>
+  <!-- <script>
+    var register = document.querySelector("#register")
+    var update = document.querySelector("#update")
+    var username = document.querySelector("#username")
+    var password = document.querySelector("#pwd")
+    var tele = document.querySelector("#tele")
+    var avater = document.querySelector("#avater")
+    var changeAvater = document.querySelector("#changeAvater")
+
+    register.onclick = () => {
+      console.log(username.value, password.value, tele.value)
+      axios.post("/user/", {
+        user_login_account: username.value,
+        user_login_password: password.value,
+        user_telphone: tele.value
+      }).then(res => {
+        console.log(res.data)
+      })
+    }
+
+    changeAvater.onclick = () => {
+      const formsdata=new FormData()
+      formsdata.append("user_image",avater.files[0])
+
+      axios.put("/user/avater/16587352039825je2zlwks8j", formsdata, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      }).then(res => {
+        console.log(res.data)
+      })
+    }
+
+    update.onclick = () => {
+      axios.put("/user/16587352039825je2zlwks8j", {
+        user_login_account: "22",
+        user_nickname: "哈哈哈",
+        user_name: "嘿嘿嘿",
+        user_loaction: "啦啦啦啦啦啦啦啦啦啦啦啦"
+      }).then(res => {
+        console.log(res.data)
+      })
+    }
+
+    //获取列表 
+    axios.get("/user/").then(res => {
+      console.log(res.data)
+    })
+  </script> -->
+</body>
+
+</html>
