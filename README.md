@@ -6,9 +6,13 @@
 
 提供后端服务
 
+*安装依赖*
+
 ```
 npm install
 ```
+
+*启动*
 
 ```
 npm run start
@@ -18,9 +22,13 @@ npm run start
 
 二手书网页后台服务页面
 
+*安装依赖*
+
 ```
 npm install
 ```
+
+*启动*
 
 ```
 npm run serve
@@ -30,13 +38,14 @@ npm run serve
 
 二手书网页端
 
-```
-npm install
-```
+*安装依赖*
 
 ```
+npm install
 yarn install
 ```
+
+*启动*
 
 ```
 npm run serve
