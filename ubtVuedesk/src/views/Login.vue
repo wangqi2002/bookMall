@@ -5,44 +5,46 @@
         <img src="@/assets/imgs/book_login.jpg" alt="" />
       </div>
       <div class="login_item">
-        <div class="tabs" ref="tab">
-          <p @click="handerTab" class="p1 active">密码登录</p>
-          <p @click="handerTab" class="p2">短信登录</p>
-        </div>
-        <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm"
-          v-if="tabBol">
-          <el-form-item label="手机号" prop="user_telphone" class="el_input_book">
-            <el-input type="text" v-model="ruleForm.user_telphone" autocomplete="off" placeholder="手机号码"
-              class="input_place">
-            </el-input>
-            <img class="single_img" src="@/assets/imgs/login_user.png" alt="" />
-          </el-form-item>
-          <el-form-item label="密码" prop="user_login_password" class="el_input_book">
-            <el-input type="password" v-model="ruleForm.user_login_password" autocomplete="off" placeholder="密码"
-              class="input_place"></el-input>
-            <img src="@/assets/imgs/login_pass.png" alt="" />
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="submitFormM('ruleForm')">登录</el-button>
-          </el-form-item>
-        </el-form>
-        <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm"
-          v-else>
-          <el-form-item label="手机号" prop="newTele" class="el_input_book">
-            <el-input type="text" v-model="ruleForm.user_telphone" autocomplete="off" placeholder="请输入手机号码"
-              class="input_place">
-            </el-input>
-            <img class="single_img" src="@/assets/imgs/login_user.png" alt="" />
-          </el-form-item>
-          <el-form-item label="验证码" prop="svg" class="svg">
-            <el-input type="text" v-model="ruleForm.svg" autocomplete="off" placeholder="请输入验证码"
-              class="svg_item"></el-input>
-            <div class="getSvg" @click="handerSvg">获取验证码</div>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="submitFormS('ruleForm')">登录</el-button>
-          </el-form-item>
-        </el-form>
+        <el-tabs v-model="activeName" @tab-click="handleClick">
+          <el-tab-pane label="密码登录" name="password">
+            <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" v-if="activeName == 'password'">
+              <el-form-item label="手机号" prop="user_telphone" class="el_input_book">
+                <el-input type="text" v-model="ruleForm.user_telphone" autocomplete="off" placeholder="手机号码"
+                  class="input_place">
+                </el-input>
+                <img class="single_img" src="@/assets/imgs/login_user.png" alt="" />
+              </el-form-item>
+              <el-form-item label="密码" prop="user_login_password" class="el_input_book">
+                <el-input type="password" v-model="ruleForm.user_login_password" autocomplete="off" placeholder="密码"
+                  class="input_place"></el-input>
+                <img src="@/assets/imgs/login_pass.png" alt="" />
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="submitFormM('ruleForm')">登录</el-button>
+              </el-form-item>
+            </el-form>
+          </el-tab-pane>
+          <el-tab-pane label="短信登录" name="svg">
+            <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" v-if="activeName == 'svg'">
+              <el-form-item label="手机号" prop="newTele" class="el_input_book">
+                <el-input type="text" v-model="ruleForm.user_telphone" autocomplete="off" placeholder="请输入手机号码"
+                  class="input_place">
+                </el-input>
+                <img class="single_img" src="@/assets/imgs/login_user.png" alt="" />
+              </el-form-item>
+              <el-form-item label="验证码" prop="svg" class="svg">
+                <el-input type="text" v-model="ruleForm.svg" autocomplete="off" placeholder="请输入验证码"
+                  class="svg_item"></el-input>
+                <div class="getSvg" @click="handerSvg">获取验证码</div>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="submitFormS('ruleForm')">登录</el-button>
+              </el-form-item>
+            </el-form></el-tab-pane>
+          <el-tab-pane label="微信扫码" name="code">
+            放二维码
+          </el-tab-pane>
+        </el-tabs>
       </div>
     </div>
   </div>
@@ -69,7 +71,7 @@ export default {
     var validateSvg = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请输入验证码"));
-      } else if (this.ruleForm.text != value) {
+      } else if (this.VerificationCode != value) {
         callback(new Error("验证码输入错误"));
       } else {
         callback();
@@ -77,21 +79,14 @@ export default {
     };
 
     return {
-      tabBol: true,
+      activeName: 'password',
+      VerificationCode: '',
       ruleForm: {
         user_telphone: "",
         user_login_password: "",
-        text: "",
         svg: "",
       },
-      rulesT: {
-        user_telphone: [
-          {
-            validator: validateAccount,
-            trigger: "blur",
-          },
-        ],
-      },
+      rules: {},
       rulesM: {
         user_telphone: [
           {
@@ -122,43 +117,19 @@ export default {
       },
     };
   },
-  computed: {
-    rules: function () {
-      let flag = 0;
-      if (JSON.stringify(this.$refs) == "{}") {
-        return this.rulesM;
-      } else {
-        let childTabs = this.$refs.tab.childNodes;
-        for (let i = 0; i < childTabs.length; i++) {
-          if (childTabs[i].getAttribute("class")) {
-            if (childTabs[i].classList.length == 1) {
-              flag = i;
-            }
-          }
-        }
-        switch (flag) {
-          case 0:
-            return this.rulesM;
-          // break;
-          case 1:
-            return this.rulesS;
-          // break;
-          default:
-            return this.rulesT;
-        }
-      }
-    },
-  },
   methods: {
-    handerTab(e) {
-      let childTabs = this.$refs.tab.childNodes;
-      for (let i = 0; i < childTabs.length; i++) {
-        if (childTabs[i].getAttribute("class")) {
-          childTabs[i].classList.remove("active");
-        }
+    handleClick(tab, event) {
+      // console.log(tab, event);
+      if (this.activeName == "password") {
+        this.rules = this.rulesM
+      } else if (this.activeName == "svg") {
+        this.rules = this.rulesS
       }
-      this.tabBol = !this.tabBol;
-      e.target.classList.add("active");
+      this.ruleForm = {
+        user_telphone: "",
+        user_login_password: "",
+        svg: "",
+      }
     },
     //获取短信验证码
     async handerSvg() {
@@ -167,7 +138,7 @@ export default {
       let { data } = await this.$axios.post("/node/user/getSvg", {
         user_telphone: this.ruleForm.user_telphone,
       });
-      this.ruleForm.text = data;
+      this.VerificationCode = data;
       console.log("login", data);
     },
     // 处理登录
@@ -222,6 +193,9 @@ export default {
       this.$refs[formName].resetFields();
     },
   },
+  mounted() {
+    this.rules = this.rulesM
+  },
 };
 </script>
 
@@ -248,104 +222,94 @@ export default {
     }
 
     .login_item {
-      flex-grow: 1;
+      width: 50%;
       padding: 30px;
       box-sizing: border-box;
       background: rgb(233, 233, 242);
 
-      .tabs {
-        width: 200px;
-        margin: 20px auto;
-        display: flex;
-        font-size: 18px;
-        font-weight: bold;
+      .el-tabs {
+        .el-tabs__content {
+          .el-tab-pane {
+            text-align: center;
 
-        p {
-          padding-bottom: 5px;
-          cursor: pointer;
-
-          &:first-child {
-            margin-left: -40px;
-            margin-right: 20px;
+            input::-webkit-input-placeholder {
+              font-size: 16px;
+            }
           }
         }
-
-        .active {
-          border-bottom: 2px solid black;
-        }
-      }
-
-      /deep/ .el-form-item__content {
-        display: flex;
-        width: 70%;
-      }
-
-      .el_input_book {
-        position: relative;
-
-        img {
-          position: absolute;
-          top: 14px;
-          left: 8px;
-          width: 20px;
-        }
-
-        .single_img {
-          width: 50px;
-          left: -5px;
-          top: 10px;
-        }
-      }
-
-      /deep/ .el-button {
-        width: 100%;
-        height: 50px;
-        margin-top: 10px;
-      }
-
-      .svg {
-        .getSvg {
-          width: 120px;
-          margin-left: 20px;
-          color: #409eff;
-          border: 1px solid #409eff;
-          background: #fff;
-          text-align: center;
-          cursor: pointer;
-        }
-
-        .svg_item {
-          width: 60% !important;
-        }
-      }
-
-      /deep/ input::-webkit-input-placeholder {
-        font-size: 18px;
-      }
-
-      /deep/ .el-form-item__label {
-        display: none;
-      }
-
-      /deep/ .el-input__suffix {
-        display: none;
-      }
-
-      /deep/ .el-input__inner {
-        height: 50px;
-        padding: 0 35px;
-
-        &::placeholder {
-          font-size: 16px;
-        }
-      }
-
-      h2 {
-        text-align: center;
-        margin-bottom: 30px;
-        font-size: 35px;
       }
     }
+  }
+
+  /deep/ .el-form-item__content {
+    display: flex;
+    width: 80%;
+    margin: 0 10%;
+  }
+
+  .el_input_book {
+    position: relative;
+
+    img {
+      position: absolute;
+      top: 14px;
+      left: 8px;
+      width: 20px;
+    }
+
+    .single_img {
+      width: 50px;
+      left: -5px;
+      top: 10px;
+    }
+  }
+
+  /deep/ .el-button {
+    width: 100%;
+    height: 50px;
+    margin-top: 10px;
+  }
+
+  .svg {
+    .svg_item {
+      width: calc(100% - 100px);
+    }
+
+    .getSvg {
+      width: 80px;
+      height: 46px;
+      line-height: 46px;
+      border-radius: 4px;
+      margin: 2px 0 2px 20px;
+      color: #409eff;
+      border: 1px solid #409eff;
+      background: #fff;
+      text-align: center;
+      cursor: pointer;
+    }
+  }
+
+  /deep/ .el-form-item__label {
+    display: none;
+  }
+
+  /deep/ .el-input__suffix {
+    display: none;
+  }
+
+  /deep/ .el-input__inner {
+    height: 50px;
+    padding: 0 35px;
+
+    &::placeholder {
+      font-size: 16px;
+    }
+  }
+
+  h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 35px;
   }
 }
 </style>

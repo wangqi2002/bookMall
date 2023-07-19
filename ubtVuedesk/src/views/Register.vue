@@ -139,7 +139,7 @@ export default {
 
     .tip {
       position: absolute;
-      bottom: 21%;
+      bottom: 15%;
       right: 15%;
       color: red;
       font-size: 12px;
